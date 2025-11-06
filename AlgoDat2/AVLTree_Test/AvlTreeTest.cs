@@ -21,14 +21,14 @@ namespace AVLTree_Test
 			Assert.That(_tree.Root, Is.Null);
 		}
 
-		[Test] // TestCase
+		[Test]
 		public void Add_Single_Element_BecomesRoot()
 		{
 			_tree.Add(12);
 			Assert.That(_tree.Root, Is.Not.Null);
-			Assert.That(_tree.Root!.Value, Is.EqualTo(12));
-			Assert.That(_tree.Root!.LeftChild, Is.Null);
-			Assert.That(_tree.Root!.RightChild, Is.Null);
+			Assert.That(_tree.Root?.Value, Is.EqualTo(12));
+			Assert.That(_tree.Root?.LeftChild, Is.Null);
+			Assert.That(_tree.Root?.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -46,28 +46,33 @@ namespace AVLTree_Test
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root?.Value, Is.EqualTo(12));
-			Assert.That(_tree?.Root?.RightChild, Is.Null);
+			Assert.That(_tree?.Root?.Height, Is.EqualTo(2));
 			Assert.That(_tree?.Root?.LeftChild, Is.Not.Null);
 			Assert.That(_tree?.Root?.LeftChild?.Value, Is.EqualTo(9));
-			Assert.That(_tree?.Root?.Height, Is.EqualTo(2));
+			Assert.That(_tree?.Root?.LeftChild?.Height, Is.EqualTo(1));
+			Assert.That(_tree?.Root?.RightChild, Is.Null);
+			Assert.That(_tree?.Root?.LeftChild?.LeftChild, Is.Null);
+			Assert.That(_tree?.Root?.LeftChild?.RightChild, Is.Null);
 		}
 
-
 		[Test]
-		public void Adding_A_Higher_Value_Becomes_LeftChild()
+		public void Adding_A_Higher_Value_Becomes_RightChild()
 		{
 			_tree.Add(9);
 			_tree.Add(12);
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root?.Value, Is.EqualTo(9));
-			Assert.That(_tree?.Root?.LeftChild, Is.Null);
+			Assert.That(_tree?.Root?.Height, Is.EqualTo(2));
 			Assert.That(_tree?.Root?.RightChild, Is.Not.Null);
 			Assert.That(_tree?.Root?.RightChild?.Value, Is.EqualTo(12));
-			Assert.That(_tree?.Root?.Height, Is.EqualTo(2));
+			Assert.That(_tree?.Root?.RightChild?.Height, Is.EqualTo(1));
+			Assert.That(_tree?.Root?.LeftChild, Is.Null);
+			Assert.That(_tree?.Root?.RightChild?.RightChild, Is.Null);
+			Assert.That(_tree?.Root?.RightChild?.LeftChild, Is.Null);
 		}
 
-		[Test] // structure testen -- was is left right und so 
+		[Test]
 		public void Add_Multiple_Elements_All_Searchable()
 		{
 			int[] items = { 11, 2, 13, 3, 7, 8, 20 };
@@ -79,6 +84,35 @@ namespace AVLTree_Test
 			{
 				Assert.IsTrue(_tree.Search(item));
 			}
+
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root?.Value, Is.EqualTo(7));
+			Assert.That(_tree.Root?.Height, Is.EqualTo(4));
+			Assert.That(_tree.Root?.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root?.LeftChild?.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root?.LeftChild?.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root?.LeftChild?.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root?.LeftChild?.LeftChild?.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root?.LeftChild?.LeftChild?.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root?.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root?.RightChild?.Value, Is.EqualTo(11));
+			Assert.That(_tree.Root?.RightChild?.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root?.RightChild?.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root?.RightChild?.LeftChild?.Value, Is.EqualTo(8));
+			Assert.That(_tree.Root?.RightChild?.LeftChild?.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root?.RightChild?.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root?.RightChild?.RightChild?.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root?.RightChild?.RightChild?.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root?.RightChild?.RightChild?.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root?.RightChild?.RightChild?.RightChild?.Value, Is.EqualTo(20));
+			Assert.That(_tree.Root?.RightChild?.RightChild?.RightChild?.Height, Is.EqualTo(1));
+
+			Assert.That(_tree.Root?.LeftChild?.RightChild, Is.Null);
+			Assert.That(_tree.Root?.LeftChild?.LeftChild?.LeftChild, Is.Null);
+			Assert.That(_tree.Root?.LeftChild?.LeftChild?.RightChild, Is.Null);
+			Assert.That(_tree.Root?.RightChild?.RightChild?.LeftChild, Is.Null);
+			Assert.That(_tree.Root?.RightChild?.RightChild?.RightChild?.LeftChild, Is.Null);
+			Assert.That(_tree.Root?.RightChild?.RightChild?.RightChild?.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -89,9 +123,10 @@ namespace AVLTree_Test
 
 			Assert.IsTrue( _tree.Search(12));
 
-			Assert.That(_tree.Root!.LeftChild, Is.Null);
-			Assert.That(_tree.Root!.RightChild, Is.Null);
-			Assert.That(_tree.Root!.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.Value, Is.EqualTo(12));
+			Assert.That(_tree.Root.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -100,8 +135,19 @@ namespace AVLTree_Test
 			_tree.Add(3);
 			_tree.Add(2);
 			_tree.Add(1);
+			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(2));
 			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -110,8 +156,19 @@ namespace AVLTree_Test
 			_tree.Add(1);
 			_tree.Add(2);
 			_tree.Add(3);
+			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(2));
 			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -120,8 +177,19 @@ namespace AVLTree_Test
 			_tree.Add(3);
 			_tree.Add(1);
 			_tree.Add(2);
+			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(2));
 			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -130,8 +198,19 @@ namespace AVLTree_Test
 			_tree.Add(1);
 			_tree.Add(3);
 			_tree.Add(2);
+			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(2));
 			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -158,12 +237,35 @@ namespace AVLTree_Test
 			_tree.Add(6);
 			_tree.Add(2);
 
-			_tree.Remove(2);
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
 
+			_tree.Remove(2);
 			Assert.IsFalse(_tree.Search(2));
-			Assert.IsTrue(_tree.Search(6));
-			Assert.IsTrue(_tree.Search(4));
-			Assert.IsTrue(_tree.Search(10));
+
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -174,16 +276,40 @@ namespace AVLTree_Test
 			_tree.Add(6);
 			_tree.Add(2);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(4);
 
 			Assert.IsFalse(_tree.Search(4));
-			Assert.IsTrue(_tree.Search(6));
-			Assert.IsTrue(_tree.Search(2));
-			Assert.IsTrue(_tree.Search(10));
+
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
-		public void Remove_Node_With_Two_Children_Tree_Stays_Balanced() // structure
+		public void Remove_Node_With_Two_Children_Tree_Stays_Balanced() 
 		{
 			_tree.Add(10);
 			_tree.Add(4);
@@ -191,29 +317,83 @@ namespace AVLTree_Test
 			_tree.Add(2);
 			_tree.Add(3);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.RightChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(3);
 
 			Assert.IsFalse(_tree.Search(3));
-			Assert.IsTrue(_tree.Search(6));
-			Assert.IsTrue(_tree.Search(4));
-			Assert.IsTrue(_tree.Search(10));
-			Assert.IsTrue(_tree.Search(2));
+
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
-		public void Remove_RootNode_Root_Deleted_Tree_Stays_Balanced() // structure
+		public void Remove_RootNode_Root_Deleted_Tree_Stays_Balanced() 
 		{
 			_tree.Add(10);
 			_tree.Add(4);
 			_tree.Add(6);
 			_tree.Add(2);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(6));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(6);
 
 			Assert.IsFalse(_tree.Search(6));
-			Assert.IsTrue(_tree.Search(2));
-			Assert.IsTrue(_tree.Search(4));
-			Assert.IsTrue(_tree.Search(10));
+
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(4));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -224,12 +404,36 @@ namespace AVLTree_Test
 			_tree.Add(16);
 			_tree.Add(5);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.LeftChild.Value, Is.EqualTo(5));
+			Assert.That(_tree.Root.LeftChild.LeftChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(16);
+
+			Assert.IsFalse(_tree.Search(16));
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
 			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(5));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
 			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -240,12 +444,36 @@ namespace AVLTree_Test
 			_tree.Add(5);
 			_tree.Add(16);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(5));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.RightChild.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.RightChild.RightChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(5);
+
+			Assert.IsFalse(_tree.Search(5));
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
 			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
 			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
@@ -256,14 +484,39 @@ namespace AVLTree_Test
 			_tree.Add(16);
 			_tree.Add(11);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild.Value, Is.EqualTo(11));
+			Assert.That(_tree.Root.LeftChild.RightChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(16);
+
+			Assert.IsFalse(_tree.Search(16));
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(11));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
 			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(10));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
 			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
+		//TODO: Left und Right child is null noch dazu hauen
 
 		[Test]
 		public void Remove_Element_Triggers_RLRotation_Middle_Value_Becomes_Root()
@@ -273,12 +526,36 @@ namespace AVLTree_Test
 			_tree.Add(35);
 			_tree.Add(20);
 
+			Assert.That(_tree.Root, Is.Not.Null);
+			Assert.That(_tree.Root.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.Height, Is.EqualTo(3));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(13));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(35));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Not.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild.Value, Is.EqualTo(20));
+			Assert.That(_tree.Root.RightChild.LeftChild.Height, Is.EqualTo(1));
+
 			_tree.Remove(13);
+
+			Assert.IsFalse(_tree.Search(13));
 
 			Assert.That(_tree.Root, Is.Not.Null);
 			Assert.That(_tree.Root.Value, Is.EqualTo(20));
+			Assert.That(_tree.Root.Height, Is.EqualTo(2));
+			Assert.That(_tree.Root.LeftChild, Is.Not.Null);
 			Assert.That(_tree.Root.LeftChild.Value, Is.EqualTo(16));
+			Assert.That(_tree.Root.LeftChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.RightChild, Is.Not.Null);
 			Assert.That(_tree.Root.RightChild.Value, Is.EqualTo(35));
+			Assert.That(_tree.Root.RightChild.Height, Is.EqualTo(1));
+			Assert.That(_tree.Root.LeftChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.LeftChild.RightChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.LeftChild, Is.Null);
+			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
 		[Test]
