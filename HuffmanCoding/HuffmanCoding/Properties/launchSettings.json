@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HuffmanCoding": {
+      "commandName": "Project",
+      "commandLineArgs": "encode \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\input.txt\" \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\output.huf\""
+    }
+  }
+}

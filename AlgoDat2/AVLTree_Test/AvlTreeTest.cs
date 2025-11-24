@@ -516,8 +516,6 @@ namespace AVLTree_Test
 			Assert.That(_tree.Root.RightChild.RightChild, Is.Null);
 		}
 
-		//TODO: Left und Right child is null noch dazu hauen
-
 		[Test]
 		public void Remove_Element_Triggers_RLRotation_Middle_Value_Becomes_Root()
 		{
