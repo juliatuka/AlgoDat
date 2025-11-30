@@ -2,7 +2,7 @@
   "profiles": {
     "HuffmanCoding": {
       "commandName": "Project",
-      "commandLineArgs": "encode \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\input.txt\" \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\output.huf\""
+      "commandLineArgs": "decode \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\hufFiles\\sample_compressed.huf\" \"Z:\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\hufFiles\\sample2.txt\""
     }
   }
 }

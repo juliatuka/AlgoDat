@@ -10,15 +10,6 @@ namespace HuffmanCoding
 {
 	public class HuffmanCoder
 	{
-		private string inputFile;
-		private string outputFile;
-
-		public HuffmanCoder(string inputFile, string outputFile)
-		{
-			this.inputFile = inputFile;
-			this.outputFile = outputFile;
-		}
-
 		private Dictionary<char, int> BuildFrequencyTable(string input)
 		{
 			if (input == null)
@@ -129,6 +120,19 @@ namespace HuffmanCoding
 				throw new ArgumentNullException(nameof(root), "The root Node must not be null.");
 			}
 
+			if (root.Character != 0 && root.Left == null && root.Right == null)
+			{
+				foreach (var b in bits)
+				{
+					if (b != '0')
+					{
+						throw new InvalidDataException($"Invalid bit '{b}' in encoded data. Only '0' is allowed for a single-symbol tree.");
+					}
+				}
+
+				return new string(root.Character, bits.Length);
+			}
+
 			string result = "";
 			Node node = root;
 
@@ -157,23 +161,23 @@ namespace HuffmanCoding
 			return result;
 		}
 
-		public void Decode()
+		public void Decode(string inputfile, string outputfile)
 		{
 			try
 			{
-				string decoded = DecodeFromFile(inputFile);
+				string decoded = DecodeFromFile(inputfile);
 
-				WriteToFile(decoded);
+				WriteToFile(decoded, outputfile);
 			}
 			catch (IOException ex)
 			{
-				throw new IOException($"I/O error while decoding file '{inputFile}'.", ex);
+				throw new IOException($"I/O error while decoding file '{inputfile}'.", ex);
 			}
 		}
 
-		private void WriteToFile(string text)
+		private void WriteToFile(string text, string file)
 		{
-			using (FileStream stream = new FileStream(outputFile, FileMode.Create))
+			using (FileStream stream = new FileStream(file, FileMode.Create))
 			{
 				using (StreamWriter writer = new StreamWriter(stream))
 				{
@@ -261,11 +265,11 @@ namespace HuffmanCoding
 			}
 		}
 
-		public void Encode()
+		public void Encode(string inputfile, string outputfile)
 		{
 			try
 			{
-				string text = File.ReadAllText(inputFile, Encoding.UTF8);
+				string text = File.ReadAllText(inputfile, Encoding.UTF8);
 
 				var table = BuildFrequencyTable(text);
 				var root = BuildHuffmanTree(table);
@@ -273,11 +277,11 @@ namespace HuffmanCoding
 
 				string encoded = EncodeText(text, codeTable);
 
-				WriteToFile(encoded, table, text.Length);
+				WriteToFile(encoded, table, text.Length, outputfile);
 			}
 			catch (IOException ex)
 			{
-				throw new IOException($"I/O error while encoing file '{inputFile}'.", ex);
+				throw new IOException($"I/O error while encoing file '{inputfile}'.", ex);
 			}
 		}
 
@@ -288,9 +292,9 @@ namespace HuffmanCoding
 		// ...
 		// <originalLength>
 		// <encodedBits>
-		private void WriteToFile(string encoded, Dictionary<char, int> frequTable, int originalTextLength)
+		private void WriteToFile(string encoded, Dictionary<char, int> frequTable, int originalTextLength, string file)
 		{
-			using (FileStream stream = new FileStream(outputFile, FileMode.Create))
+			using (FileStream stream = new FileStream(file, FileMode.Create))
 			{
 				using (StreamWriter writer = new StreamWriter(stream))
 				{
