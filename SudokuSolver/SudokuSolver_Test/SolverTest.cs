@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuSolver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -119,10 +120,10 @@ namespace SudokuSolver_Test
 		[Test]
 		public void CreateGraphFromSudokuGrid_BuildsGraph()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = EasyPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 
-			solver.CreateGraphFromSudokuGrid(grid);
+			solver.CreateGraphFromSudokuGrid();
 
 			Assert.NotNull(solver.graph);
 			Assert.That(solver.graph.AdjacencyList.Keys.Count, Is.EqualTo(81));
@@ -133,32 +134,34 @@ namespace SudokuSolver_Test
 		[Test]
 		public void CreateGraphFromSudokuGrid_DuplicateCellsInInvalidePlace_Throws()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = ContradictoryPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 
-			Assert.Throws<InvalidDataException>(() => solver.CreateGraphFromSudokuGrid(grid));
+			Graph<Node> graph = solver.CreateGraphFromSudokuGrid();
+
+			Assert.IsFalse(solver.ValidateGivenCells(graph));
 		}
 
 		[Test]
 		public void ValidateGivenCells_ReturnsTrueForValidPuzzle()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = EasyPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 
-			solver.CreateGraphFromSudokuGrid(grid);
-			Assert.True(solver.ValidateGivenCells(grid));
+			Graph<Node> graph = solver.CreateGraphFromSudokuGrid();
+			Assert.True(solver.ValidateGivenCells(graph));
 		}
 
 		[Test]
 		public void Solve_EasyPuzzle_ReturnsTrue_AndProducesValidSolution()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = EasyPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 			var original = CloneGrid(grid);
 
-			solver.CreateGraphFromSudokuGrid(grid);
+			solver.CreateGraphFromSudokuGrid();
 
-			bool ok = solver.Solve(grid);
+			bool ok = solver.Solve();
 
 			Assert.True(ok);
 			Assert.True(IsValidSolution(grid));
@@ -177,12 +180,12 @@ namespace SudokuSolver_Test
 		[Test]
 		public void Solve_AlreadySolvedPuzzle_ReturnsTrue_AndKeepsGridValid()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = SolvedPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 			var original = CloneGrid(grid);
 
-			solver.CreateGraphFromSudokuGrid(grid);
-			bool ok = solver.Solve(grid);
+			solver.CreateGraphFromSudokuGrid();
+			bool ok = solver.Solve();
 
 			Assert.True(ok);
 			Assert.True(IsValidSolution(grid));
@@ -195,10 +198,10 @@ namespace SudokuSolver_Test
 		[Test]
 		public void PrintResult_WritesResultToConsole()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = EasyPuzzle();
-			solver.CreateGraphFromSudokuGrid(grid);
-			bool ok = solver.Solve(grid);
+			var solver = new SudokuSolver.SudokuSolver(grid);
+			solver.CreateGraphFromSudokuGrid();
+			bool ok = solver.Solve();
 			Assert.True(ok);
 
 			string output = CaptureConsoleOutput(() =>
@@ -213,9 +216,9 @@ namespace SudokuSolver_Test
 		}
 
 		[Test]
-		public void PrintResult_ColorsNull_PrintsNoSolutionMessage()
+		public void PrintResult_GridNull_PrintsNoSolutionMessage()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
+			var solver = new SudokuSolver.SudokuSolver(null);
 
 			string output = CaptureConsoleOutput(() =>
 			{
@@ -230,12 +233,12 @@ namespace SudokuSolver_Test
 		[Test]
 		public void Solve_Unsolvable_Sudoku_ReturnsFalse()
 		{
-			var solver = new SudokuSolver.SudokuSolver();
 			var grid = UnsolvedPuzzle();
+			var solver = new SudokuSolver.SudokuSolver(grid);
 
-			solver.CreateGraphFromSudokuGrid(grid);
+			solver.CreateGraphFromSudokuGrid();
 
-			bool solved = solver.Solve(grid);
+			bool solved = solver.Solve();
 			Assert.False(solved);
 		}
 	}

@@ -177,7 +177,7 @@ namespace SudokuSolver
 			{
 				for (int c = 0; c < cols; c++)
 				{
-					var node = (T)(object)new Node(r, c);
+					var node = (T)(object)new Node(r, c, grid[r][c]);
 					nodeAt[r, c] = node;
 					nodes.Add(node);
 				}
@@ -190,16 +190,13 @@ namespace SudokuSolver
 					var current = nodeAt[r, c];
 
 					// adding edges to the same row nodes
-
 					for (int nextc = c + 1; nextc < cols; nextc++)
 					{
 						var toConnect = nodeAt[r, nextc];
 						AddUndirectedEdge(current, toConnect);
 					}
 
-
 					// adding edges to the same column node
-
 					for (int nextr = r + 1; nextr < rows; nextr++)
 					{
 						var toConnect = nodeAt[nextr, c];
@@ -207,7 +204,6 @@ namespace SudokuSolver
 					}
 
 					// adding edges to the 3x3 box nodes
-
 					var boxR = (r / 3) * 3;
 					var boxC = (c / 3) * 3;
 

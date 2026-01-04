@@ -10,55 +10,39 @@ namespace SudokuSolver
 	{
 		public Graph<Node> graph;
 		private int[] colors;
-		private bool[] fixedCell;
+		private int[][] grid;
 
-		public SudokuSolver()
+		public SudokuSolver(int[][] sudokuGrid)
 		{
+			grid = sudokuGrid;
 		}
 
-		public void CreateGraphFromSudokuGrid(int[][] grid)
+		public Graph<Node> CreateGraphFromSudokuGrid()
 		{
 			graph = new Graph<Node>();
 
 			graph.CreateGraphFromSudokuGrid(grid);
 
-			InitalizeColors(grid);
+			InitalizeColors(graph);
 
-			if (!ValidateGivenCells(grid))
-				throw new InvalidDataException("Invalid Sudoku: given cells conflict.");
+			return graph;
 		}
 
 		private int Id(int r, int c) => r * 9 + c;
 
-		public void InitalizeColors(int[][] grid)
+		public void InitalizeColors(Graph<Node> graph)
 		{
 			colors = new int[81];
-			fixedCell = new bool[81];
 
-			for (int r = 0; r < grid.Length; r++)
+			foreach (Node node in graph.Nodes)
 			{
-				for (int c = 0; c < grid[r].Length; c++)
-				{
-					int id = Id(r, c);
-					int val = grid[r][c];
-
-					colors[id] = val;
-					fixedCell[id] = (val != 0);
-				}
+				int id = Id(node.Row, node.Col);
+				colors[id] = node.Value;
 			}
 		}
 
-		public bool ValidateGivenCells(int[][] grid)
-		{
-			int[] colors = new int[81];
-			for (int r = 0; r < 9; r++)
-			{
-				for (int c = 0; c < 9; c++)
-				{
-					colors[r * 9 + c] = grid[r][c];
-				}
-			}
-
+		public bool ValidateGivenCells(Graph<Node> graph)
+		{ 
 			foreach (var kvp in graph.AdjacencyList)
 			{
 				int id = kvp.Key;
@@ -69,7 +53,8 @@ namespace SudokuSolver
 				{
 					if (colors[edge.Target] == 0) continue;
 
-					if (val == colors[edge.Target]) // meaning the initial given cells make the sudoku unsolvable
+					// meaning the initial given cells make the sudoku unsolvable
+					if (val == colors[edge.Target])
 						return false;
 				}
 			}
@@ -77,7 +62,15 @@ namespace SudokuSolver
 			return true;
 		}
 
-		public bool Solve(int[][] grid)
+		private void ApplyResultsToGrid(int[] colors)
+		{
+			// writing colors back into the grid
+			for (int r = 0; r < 9; r++)
+				for (int c = 0; c < 9; c++)
+					grid[r][c] = colors[Id(r, c)];
+		}
+
+		public bool Solve()
 		{
 			// Build neighborColors from the current colors[] assignment (givens)
 			var neighborColors = new HashSet<int>[81];
@@ -90,6 +83,7 @@ namespace SudokuSolver
 			{
 				if (colors[index] == 0) continue;
 
+				// Add the "color" of the current index to all graph neighbors to mark this color as forbidden for them
 				foreach (var edge in graph.AdjacencyList[index])
 					neighborColors[edge.Target].Add(colors[index]);
 			}
@@ -98,10 +92,7 @@ namespace SudokuSolver
 
 			if (ok)
 			{
-				// write "colors" back into grid
-				for (int r = 0; r < 9; r++)
-					for (int c = 0; c < 9; c++)
-						grid[r][c] = colors[Id(r, c)];
+				ApplyResultsToGrid(colors);
 			}
 
 			return ok;
@@ -117,7 +108,6 @@ namespace SudokuSolver
 			{
 				if (neighborColors[index].Contains(digit)) continue;
 
-				// assign "color"
 				colors[index] = digit;
 
 				var changed = new List<int>();
@@ -150,7 +140,6 @@ namespace SudokuSolver
 				int saturation = neighborColors[index].Count;
 				int numOfNeigh = graph.AdjacencyList.TryGetValue(index, out var edges) ? edges.Count : 0;
 
-				// DSatur
 				if (saturation > bestSaturation ||
 					(saturation == bestSaturation && numOfNeigh > bestNumOfNeigh) ||
 					(saturation == bestSaturation && numOfNeigh == bestNumOfNeigh && (bestIndex == -1 || index < bestIndex)))
@@ -166,7 +155,7 @@ namespace SudokuSolver
 
 		public void PrintResult()
 		{
-			if (colors == null)
+			if (grid == null)
 			{
 				Console.WriteLine("No solution to print.");
 				return;
@@ -184,8 +173,7 @@ namespace SudokuSolver
 					if (c % 3 == 0 && c != 0)
 						Console.Write("| ");
 
-					int id = r * 9 + c;
-					Console.Write(colors[id] + " ");
+					Console.Write(grid[r][c] + " ");
 				}
 
 				Console.WriteLine();

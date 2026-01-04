@@ -9,7 +9,7 @@ namespace SudokuSolver
 		static void Main(string[] args)
 		{
 			// RunCLI(args[0]);
-			RunCLI("C:\\Mac\\Home\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\AlgoDat\\SudokuSolver\\SudokuSolver\\easySudoku.json");
+			RunCLI("C:\\Mac\\Home\\Desktop\\FH\\Master\\Semester1\\Advanced Algorithmics\\AlgoDat\\SudokuSolver\\SudokuSolver\\example_hardSudoku.json");
 		}
 
 		static string usage = "		Please provide a json file containing a 9x9 grid containing a Sudoku Puzzle, \n" +
@@ -86,10 +86,13 @@ namespace SudokuSolver
 				return false;
 			}
 
-			SudokuSolver solver = new SudokuSolver();
-			solver.CreateGraphFromSudokuGrid(sudokuGrid);
+			SudokuSolver solver = new SudokuSolver(sudokuGrid);
+			Graph<Node> graph = solver.CreateGraphFromSudokuGrid();
 
-			bool solved = solver.Solve(sudokuGrid);
+			if (!solver.ValidateGivenCells(graph))
+				throw new InvalidDataException("Invalid Sudoku: given cells conflict.");
+
+			bool solved = solver.Solve();
 			if (!solved)
 			{
 				Console.WriteLine("No solution found."); 
